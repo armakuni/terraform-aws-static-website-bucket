@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.3.0](https://github.com/armakuni/terraform-aws-static-website-bucket/compare/v0.2.0..v0.3.0) - 2023-09-18
+#### Features
+- Import module - ([f021ed5](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/f021ed5ccb9f9f128c03c106da08929ea2da9d8a)) - Tom Oram
+
+- - -
+
 ## [v0.2.0](https://github.com/armakuni/terraform-aws-static-website-bucket/compare/v0.1.0..v0.2.0) - 2023-09-18
 #### Features
 - Import module - ([83bc4c4](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/83bc4c4673b3c5c40ab4e3feac8523c28fa6c550)) - Tom Oram
