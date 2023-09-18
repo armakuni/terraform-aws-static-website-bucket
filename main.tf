@@ -12,6 +12,7 @@ resource "aws_s3_bucket_versioning" "this" {
 }
 
 resource "aws_s3_bucket_ownership_controls" "this" {
+  # Without this, we'd is conflicting operations errors for PutBucketVersioning
   depends_on = [ aws_s3_bucket_versioning.this ]
 
   bucket = aws_s3_bucket.this.id
@@ -22,6 +23,7 @@ resource "aws_s3_bucket_ownership_controls" "this" {
 }
 
 resource "aws_s3_bucket_public_access_block" "this" {
+  # Without this, we'd is conflicting operations errors for PutBucketVersioning
   depends_on = [ aws_s3_bucket_versioning.this ]
 
   bucket = aws_s3_bucket.this.id
@@ -48,6 +50,7 @@ locals {
 }
 
 resource "aws_s3_bucket_acl" "this" {
+  # This is here because it's in all the documented examples but I don't know why
   depends_on = [
     aws_s3_bucket_ownership_controls.this,
     aws_s3_bucket_public_access_block.this
