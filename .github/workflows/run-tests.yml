@@ -1,0 +1,46 @@
+name: Run Tests
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read  # This is required for actions/checkout
+
+on:
+  workflow_call:
+    secrets:
+      AWS_ACCOUNT_ID:
+        required: true
+
+concurrency: terratest-public-website-bucket
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get Repository Name
+        id: get-repository-name
+        run: |
+          full_name="${{ github.repository }}"
+          repository_name=${full_name#*/}
+          echo "repository-name=$repository_name" >> "$GITHUB_OUTPUT"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ steps.get-repository-name.outputs.repository-name }}-github-actions
+          role-session-name: terratest-session
+          aws-region: eu-west-3
+
+      - uses: actions/setup-go@v1
+        with:
+          go-version: 1.21.0
+
+      - name: Download Go modules
+        run: go mod download
+        working-directory: test
+
+      - name: Run Terratest (via Go)
+        run: go test ./... -timeout 5m
+        working-directory: test
