@@ -1,88 +1,38 @@
-data "aws_canonical_user_id" "current" {}
+module "bucket" {
+  source = "terraform-aws-modules/s3-bucket/aws"
+  version = "3.15.1"
 
-resource "aws_s3_bucket" "this" {
   bucket = var.name
-}
-
-resource "aws_s3_bucket_versioning" "this" {
-  bucket = aws_s3_bucket.this.id
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
-
-resource "aws_s3_bucket_ownership_controls" "this" {
-  # Without this, we'd is conflicting operations errors for PutBucketVersioning
-  depends_on = [ aws_s3_bucket_versioning.this ]
-
-  bucket = aws_s3_bucket.this.id
-
-  rule {
-    object_ownership = "ObjectWriter"
-  }
-}
-
-resource "aws_s3_bucket_public_access_block" "this" {
-  # Without this, we'd is conflicting operations errors for PutBucketVersioning
-  depends_on = [ aws_s3_bucket_versioning.this ]
-
-  bucket = aws_s3_bucket.this.id
 
   block_public_acls       = false
   block_public_policy     = false
   ignore_public_acls      = false
   restrict_public_buckets = false
-}
 
-locals {
-  canonical_user_permissions = [
-    "WRITE_ACP",
-    "READ_ACP",
-    "READ",
-    "WRITE"
-  ]
+  control_object_ownership = true
+  object_ownership         = "ObjectWriter"
 
-  all_user_permissions = [
-    "READ",
-    "READ_ACP",
-    "WRITE"
-  ]
-}
-
-resource "aws_s3_bucket_acl" "this" {
-  # This is here because it's in all the documented examples but I don't know why
-  depends_on = [
-    aws_s3_bucket_ownership_controls.this,
-    aws_s3_bucket_public_access_block.this
-  ]
-
-  bucket = aws_s3_bucket.this.id
-
-  access_control_policy {
-    dynamic "grant" {
-      for_each = local.canonical_user_permissions
-      content {
-        grantee {
-          id   = data.aws_canonical_user_id.current.id
-          type = "CanonicalUser"
-        }
-        permission = grant.value
-      }
-    }
-
-    dynamic "grant" {
-      for_each = local.all_user_permissions
-      content {
-        grantee {
-          uri  = "http://acs.amazonaws.com/groups/global/AllUsers"
-          type = "Group"
-        }
-        permission = grant.value
-      }
-    }
-
-    owner {
-      id = data.aws_canonical_user_id.current.id
-    }
+  versioning = {
+    status = "Disabled"
   }
+
+  website = {
+    index_document = var.name
+  }
+
+  attach_policy = true
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid = "PublicReadForGetBucketObjects",
+        Effect = "Allow",
+        Principal = {
+          AWS = "*"
+        },
+        Action = "s3:GetObject",
+        Resource = "arn:aws:s3:::${var.name}/*"
+      }
+    ]
+  })
 }
