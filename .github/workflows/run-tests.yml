@@ -26,6 +26,9 @@ jobs:
           repository_name=${full_name#*/}
           echo "repository-name=$repository_name" >> "$GITHUB_OUTPUT"
 
+      - name: echo arn
+        run: echo "${{ steps.get-repository-name.outputs.repository-name }}-github-actions"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
