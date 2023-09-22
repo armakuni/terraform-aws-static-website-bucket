@@ -20,7 +20,7 @@ func TestTerraformAwsS3WebsiteBucketNameVariableCorrectlyAppliedNamed(t *testing
 	/* ACTION */
 	// This will run `terraform init` and `terraform plan` and fail the test if there are any errors
 	options := terraform.Options{
-		TerraformDir: "../../examples/website_bucket",
+		TerraformDir: "../../examples/complete",
 		Vars: map[string]interface{}{
 			"name":   expectedBucketName,
 			"region": "eu-west-3",
@@ -33,14 +33,14 @@ func TestTerraformAwsS3WebsiteBucketNameVariableCorrectlyAppliedNamed(t *testing
 
 	/* ASSERTIONS */
 	// Verify that our Bucket name matches variable
-	bucket := GetResourceChangeAfterByAddress("module.test_website_bucket.aws_s3_bucket.this", plan)
+	bucket := GetResourceChangeAfterByAddress("module.test_website_bucket.module.bucket.aws_s3_bucket.this[0]", plan)
 	assert.Equal(t, expectedBucketName, bucket["bucket"])
 }
 
 func TestTerraformAwsS3WebsiteBucketPublicAccessConfig(t *testing.T) {
 	/* ARRANGE */
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../../examples/website_bucket",
+		TerraformDir: "../../examples/complete",
 
 		Vars: map[string]interface{}{
 			"name":   fmt.Sprintf("terratest-website-bucket-test-%s", strings.ToLower(random.UniqueId())),
@@ -50,7 +50,7 @@ func TestTerraformAwsS3WebsiteBucketPublicAccessConfig(t *testing.T) {
 
 	/* ACTION */
 	plan := terraform.InitAndPlanAndShowWithStructNoLogTempPlanFile(t, terraformOptions)
-	bucketPublicAccess := GetResourceChangeAfterByAddress("module.test_website_bucket.aws_s3_bucket_public_access_block.this", plan)
+	bucketPublicAccess := GetResourceChangeAfterByAddress("module.test_website_bucket.module.bucket.aws_s3_bucket_public_access_block.this[0]", plan)
 
 	/* ASSERTIONS */
 	assert.Equal(t, false, bucketPublicAccess["block_public_acls"])
@@ -62,7 +62,7 @@ func TestTerraformAwsS3WebsiteBucketPublicAccessConfig(t *testing.T) {
 func TestTerraformAwsS3WebsiteBucketOwnershipControls(t *testing.T) {
 	/* ARRANGE */
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../../examples/website_bucket",
+		TerraformDir: "../../examples/complete",
 
 		Vars: map[string]interface{}{
 			"name":   fmt.Sprintf("terratest-website-bucket-test-%s", strings.ToLower(random.UniqueId())),
@@ -72,17 +72,17 @@ func TestTerraformAwsS3WebsiteBucketOwnershipControls(t *testing.T) {
 
 	/* ACTION */
 	plan := terraform.InitAndPlanAndShowWithStructNoLogTempPlanFile(t, terraformOptions)
-	bucketOwnershipControls := GetResourceChangeAfterByAddress("module.test_website_bucket.aws_s3_bucket_ownership_controls.this", plan)
+	bucketOwnershipControls := GetResourceChangeAfterByAddress("module.test_website_bucket.module.bucket.aws_s3_bucket_ownership_controls.this[0]", plan)
 	ownershipControlRules := bucketOwnershipControls["rule"].([]interface{})[0].(map[string]interface{})
 
 	/* ASSERTIONS */
 	assert.Equal(t, "ObjectWriter", ownershipControlRules["object_ownership"])
 }
 
-func TestTerraformAwsS3WebsiteBucketVersioningEnabled(t *testing.T) {
+func TestTerraformAwsS3WebsiteBucketVersioningIsDisabled(t *testing.T) {
 	/* ARRANGE */
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../../examples/website_bucket",
+		TerraformDir: "../../examples/complete",
 
 		Vars: map[string]interface{}{
 			"name":   fmt.Sprintf("terratest-website-bucket-test-%s", strings.ToLower(random.UniqueId())),
@@ -92,10 +92,9 @@ func TestTerraformAwsS3WebsiteBucketVersioningEnabled(t *testing.T) {
 
 	/* ACTION */
 	plan := terraform.InitAndPlanAndShowWithStructNoLogTempPlanFile(t, terraformOptions)
-	bucketVersioning := GetResourceChangeAfterByAddress("module.test_website_bucket.aws_s3_bucket_versioning.this", plan)
-	fmt.Println(bucketVersioning["versioning_configuration"].([]interface{})[0].(map[string]interface{})["status"])
+	bucketVersioning := GetResourceChangeAfterByAddress("module.test_website_bucket.module.bucket.aws_s3_bucket_versioning.this[0]", plan)
 	isVersionEnabled := bucketVersioning["versioning_configuration"].([]interface{})[0].(map[string]interface{})["status"]
 
 	/* ASSERTIONS */
-	assert.Equal(t, "Enabled", isVersionEnabled)
+	assert.Equal(t, "Disabled", isVersionEnabled)
 }
