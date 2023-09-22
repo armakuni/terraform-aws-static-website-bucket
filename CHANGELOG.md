@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.4.1](https://github.com/armakuni/terraform-aws-static-website-bucket/compare/v0.4.0..v0.4.1) - 2023-09-22
+#### Bug Fixes
+- Pass grant and owner through to module - ([9bb1d68](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/9bb1d688db790d9c052216bd3385c2e9738b9471)) - Tom Oram
+- correct index_document - ([e21f859](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/e21f859e6b050ebf3a3cf5d9de03b404a8d48a8c)) - Tom Oram
+#### Continuous Integration
+- Use assume-aws-oidc-role action - ([fa50e00](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/fa50e00cc074300ce2fa8ffca2b3ffa9b9361e29)) - Tom Oram
+
+- - -
+
 ## [v0.4.0](https://github.com/armakuni/terraform-aws-static-website-bucket/compare/v0.3.1..v0.4.0) - 2023-09-22
 #### Continuous Integration
 - Make pipeline run on pull request - ([0a5c769](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/0a5c7697c735608aa1d492444fc5ca30d4d64f0e)) - Tom Oram
