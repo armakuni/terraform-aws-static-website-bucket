@@ -17,7 +17,7 @@ module "bucket" {
   }
 
   website = {
-    index_document = var.name
+    index_document = "index.html"
   }
 
   attach_policy = true
