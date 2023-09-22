@@ -2,7 +2,6 @@ package test
 
 import (
 	"fmt"
-	"slices"
 	"strings"
 	"testing"
 
@@ -38,19 +37,11 @@ func TestTerraformAwsS3WebsiteBucketNameVariableCorrectlyAppliedNamed(t *testing
 	assert.Equal(t, expectedBucketName, bucket["bucket"])
 }
 
-func TestTerraformAwsS3WebsiteBucketAclConiguredAsPerLocalConfig(t *testing.T) {
+func TestTerraformAwsS3WebsiteBucketPublicAccessConfig(t *testing.T) {
 	/* ARRANGE */
-	// expectBucketPublicBlock := "{\n  PublicAccessBlockConfiguration: {\n    BlockPublicAcls: false,\n    BlockPublicPolicy: false,\n    IgnorePublicAcls: false,\n    RestrictPublicBuckets: false\n  }\n}"
-	expectedCanonicalUserPermissions := []string{"WRITE_ACP", "READ_ACP", "READ", "WRITE"}
-	expectedGroupPermissions := []string{"READ", "READ_ACP", "WRITE"}
-
-	// Construct the terraform options with default retryable errors to handle the most common retryable errors in
-	// terraform testing.
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		// The path to where our Terraform code is located
 		TerraformDir: "../../examples/website_bucket",
 
-		// Variables to pass to our Terraform code using -var options
 		Vars: map[string]interface{}{
 			"name":   fmt.Sprintf("terratest-website-bucket-test-%s", strings.ToLower(random.UniqueId())),
 			"region": "eu-west-3",
@@ -59,22 +50,52 @@ func TestTerraformAwsS3WebsiteBucketAclConiguredAsPerLocalConfig(t *testing.T) {
 
 	/* ACTION */
 	plan := terraform.InitAndPlanAndShowWithStructNoLogTempPlanFile(t, terraformOptions)
+	bucketPublicAccess := GetResourceChangeAfterByAddress("module.test_website_bucket.aws_s3_bucket_public_access_block.this", plan)
 
 	/* ASSERTIONS */
-	accessControlPolicy := GetBucketGrantList(t, plan)
-	grantList := accessControlPolicy[0].Grant
+	assert.Equal(t, false, bucketPublicAccess["block_public_acls"])
+	assert.Equal(t, false, bucketPublicAccess["block_public_policy"])
+	assert.Equal(t, false, bucketPublicAccess["ignore_public_acls"])
+	assert.Equal(t, false, bucketPublicAccess["restrict_public_buckets"])
+}
 
-	// Verify each grant permissions are contained in our expected user permissions list
-	for _, grant := range grantList {
-		granteeType := grant.Grantee[0].Type
-		switch granteeType {
-		case "CanonicalUser":
-			assert.True(t, slices.Contains(expectedCanonicalUserPermissions, grant.Permission))
-		case "Group":
-			assert.True(t, slices.Contains(expectedGroupPermissions, grant.Permission))
-		default:
-			fmt.Printf("Incorrect grantee type: %s expcted CanonicalUser or Group\n", granteeType)
-			t.Fail()
-		}
-	}
+func TestTerraformAwsS3WebsiteBucketOwnershipControls(t *testing.T) {
+	/* ARRANGE */
+	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
+		TerraformDir: "../../examples/website_bucket",
+
+		Vars: map[string]interface{}{
+			"name":   fmt.Sprintf("terratest-website-bucket-test-%s", strings.ToLower(random.UniqueId())),
+			"region": "eu-west-3",
+		},
+	})
+
+	/* ACTION */
+	plan := terraform.InitAndPlanAndShowWithStructNoLogTempPlanFile(t, terraformOptions)
+	bucketOwnershipControls := GetResourceChangeAfterByAddress("module.test_website_bucket.aws_s3_bucket_ownership_controls.this", plan)
+	ownershipControlRules := bucketOwnershipControls["rule"].([]interface{})[0].(map[string]interface{})
+
+	/* ASSERTIONS */
+	assert.Equal(t, "ObjectWriter", ownershipControlRules["object_ownership"])
+}
+
+func TestTerraformAwsS3WebsiteBucketVersioningEnabled(t *testing.T) {
+	/* ARRANGE */
+	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
+		TerraformDir: "../../examples/website_bucket",
+
+		Vars: map[string]interface{}{
+			"name":   fmt.Sprintf("terratest-website-bucket-test-%s", strings.ToLower(random.UniqueId())),
+			"region": "eu-west-3",
+		},
+	})
+
+	/* ACTION */
+	plan := terraform.InitAndPlanAndShowWithStructNoLogTempPlanFile(t, terraformOptions)
+	bucketVersioning := GetResourceChangeAfterByAddress("module.test_website_bucket.aws_s3_bucket_versioning.this", plan)
+	fmt.Println(bucketVersioning["versioning_configuration"].([]interface{})[0].(map[string]interface{})["status"])
+	isVersionEnabled := bucketVersioning["versioning_configuration"].([]interface{})[0].(map[string]interface{})["status"]
+
+	/* ASSERTIONS */
+	assert.Equal(t, "Enabled", isVersionEnabled)
 }
