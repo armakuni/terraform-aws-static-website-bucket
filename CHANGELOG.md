@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.4.0](https://github.com/armakuni/terraform-aws-static-website-bucket/compare/v0.3.1..v0.4.0) - 2023-09-22
+#### Continuous Integration
+- Make pipeline run on pull request - ([0a5c769](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/0a5c7697c735608aa1d492444fc5ca30d4d64f0e)) - Tom Oram
+#### Features
+- Make bucket publicly accessible - ([d0655a0](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/d0655a0da971d9e7697adf98642c4dc5ba44d333)) - Tom Oram
+#### Tests
+- Tidy integration test - ([7c87308](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/7c8730850fc465c70317ea7c2ccfbd1d01ff0200)) - Tom Oram
+
+- - -
+
 ## [v0.3.1](https://github.com/armakuni/terraform-aws-static-website-bucket/compare/v0.3.0..v0.3.1) - 2023-09-19
 #### Bug Fixes
 - update tag-and-release to 0.4.1 - ([c58bc15](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/c58bc1536b4efe97804759d5e8ab034d8b231962)) - Ben Nagy
