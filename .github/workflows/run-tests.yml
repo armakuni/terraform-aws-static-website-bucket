@@ -7,7 +7,7 @@ permissions:
 on:
   workflow_call:
     secrets:
-      AWS_ACCOUNT_ID:
+      aws-account-id:
         required: true
 
 concurrency: terratest-public-website-bucket
@@ -19,21 +19,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Get Repository Name
-        id: get-repository-name
-        run: |
-          full_name="${{ github.repository }}"
-          repository_name=${full_name#*/}
-          echo "repository-name=$repository_name" >> "$GITHUB_OUTPUT"
-
-      - name: echo arn
-        run: echo "${{ steps.get-repository-name.outputs.repository-name }}-github-actions"
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
+      - name: Log in to AWS
+        uses: armakuni/github-actions/assume-aws-oidc-role@v0.6.1
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ steps.get-repository-name.outputs.repository-name }}-github-actions
-          role-session-name: terratest-session
+          aws-account-id: ${{ secrets.aws-account-id }}
           aws-region: eu-west-3
 
       - uses: actions/setup-go@v1
