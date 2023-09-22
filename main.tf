@@ -35,4 +35,7 @@ module "bucket" {
       }
     ]
   })
+
+  grant = var.grant
+  owner = var.owner
 }
