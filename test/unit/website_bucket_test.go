@@ -20,19 +20,17 @@ func TestTerraformAwsS3WebsiteBucketNameVariableCorrectlyAppliedNamed(t *testing
 
 	/* ACTION */
 	// This will run `terraform init` and `terraform plan` and fail the test if there are any errors
-	options := terraform.Options{
+	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: "../../examples/complete",
+
 		Vars: map[string]interface{}{
 			"name":   expectedBucketName,
 			"region": "eu-west-3",
 		},
-	}
-	terraformOptions := terraform.WithDefaultRetryableErrors(t, &options)
+	})
 
 	/* ACTION */
-	// plan := terraform.InitAndPlanAndShowWithStructNoLogTempPlanFile(t, terraformOptions)
-	plan := terraform.InitAndPlanAndShowWithStruct(t, terraformOptions)
-	fmt.Println(plan)
+	plan := terraform.InitAndPlanAndShowWithStructNoLogTempPlanFile(t, terraformOptions)
 
 	/* ASSERTIONS */
 	// Verify that our Bucket name matches variable
