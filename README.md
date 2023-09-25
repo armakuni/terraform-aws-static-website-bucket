@@ -1,3 +1,8 @@
+# Website Bucket Module
+## Pipeline Status
+
+[![.github/workflows/pipeline.yml](https://github.com/armakuni/terraform-aws-static-website-bucket/actions/workflows/pipeline.yml/badge.svg?branch=main)](https://github.com/armakuni/terraform-aws-static-website-bucket/actions/workflows/pipeline.yml)
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
