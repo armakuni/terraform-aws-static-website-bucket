@@ -2,6 +2,28 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.4.2](https://github.com/armakuni/terraform-aws-static-website-bucket/compare/v0.4.1..v0.4.2) - 2023-09-25
+#### Bug Fixes
+- Generate terraform docs - ([1715fcf](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/1715fcf48a063aa622e39026dc0a8d2d6466a416)) - Tom Oram
+- Set required terraform version - ([9ea32c8](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/9ea32c8c1e3fa9577a73db96922f1fe1a4460a3f)) - Tom Oram
+#### Continuous Integration
+- split unit and integrations as separate jobs - ([3da91c8](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/3da91c8e73a5ed0637cd2cef2f5a19417f3cffb4)) - abhisheksr01
+#### Documentation
+- add pipeline status to README - ([e45c5b7](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/e45c5b710dc319f32571345d01a1cbdd4d7f2e75)) - abhisheksr01
+#### Miscellaneous Chores
+- **(unit)** fix failing test - ([7d19fd5](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/7d19fd51d3cb6e5e0c9050a361f7acc744effd6f)) - abhisheksr01
+#### Refactoring
+- **(unit)** use the go-terratest-helper library - ([88e1d64](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/88e1d64581260e47facc3fab6984aff824f8424e)) - abhisheksr01
+#### Style
+- Add *.go to .editorconfig - ([a2742fa](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/a2742fa9c5def36b6068422aa07cba2ba3e94f28)) - Tom Oram
+#### Tests
+- **(integration)** refactored folder structure - ([1870e3b](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/1870e3b0b4842ae10b01298da46d122ed6fb4cc5)) - d3vadv3ntur3s
+- **(unit)** 3 tests for bucket versioning, acl, and ownership controls - ([49c107c](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/49c107c132aa1002def4eb3ce3cdf26309b8bf25)) - d3vadv3ntur3s
+- **(unit)** bucket name and acl from plan output leveraging helper functions - ([bdd158a](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/bdd158a3e0b91eed2b48f7ca36248af64183862e)) - d3vadv3ntur3s
+- remove planfilepath reference from the test - ([922dc33](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/922dc33aa818bee5ccbd51021a2b4db96c912bbf)) - abhisheksr01
+
+- - -
+
 ## [v0.4.1](https://github.com/armakuni/terraform-aws-static-website-bucket/compare/v0.4.0..v0.4.1) - 2023-09-22
 #### Bug Fixes
 - Pass grant and owner through to module - ([9bb1d68](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/9bb1d688db790d9c052216bd3385c2e9738b9471)) - Tom Oram
