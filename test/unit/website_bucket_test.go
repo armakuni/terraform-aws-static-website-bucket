@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/armakuni/go-terratest-helper"
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 
@@ -26,14 +27,18 @@ func TestTerraformAwsS3WebsiteBucketNameVariableCorrectlyAppliedNamed(t *testing
 			"region": "eu-west-3",
 		},
 	}
+	options.PlanFilePath = "./plat.out"
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &options)
 
 	/* ACTION */
-	plan := terraform.InitAndPlanAndShowWithStructNoLogTempPlanFile(t, terraformOptions)
+	// plan := terraform.InitAndPlanAndShowWithStructNoLogTempPlanFile(t, terraformOptions)
+	plan := terraform.InitAndPlanAndShowWithStruct(t, terraformOptions)
+	fmt.Println(plan)
 
 	/* ASSERTIONS */
 	// Verify that our Bucket name matches variable
-	bucket := GetResourceChangeAfterByAddress("module.test_website_bucket.module.bucket.aws_s3_bucket.this[0]", plan)
+	bucket, err := tfplanstruct.GetResourceChangeAfterByAddressE("module.test_website_bucket.module.bucket.aws_s3_bucket.this[0]", plan)
+	assert.Empty(t, err)
 	assert.Equal(t, expectedBucketName, bucket["bucket"])
 }
 
@@ -50,9 +55,10 @@ func TestTerraformAwsS3WebsiteBucketPublicAccessConfig(t *testing.T) {
 
 	/* ACTION */
 	plan := terraform.InitAndPlanAndShowWithStructNoLogTempPlanFile(t, terraformOptions)
-	bucketPublicAccess := GetResourceChangeAfterByAddress("module.test_website_bucket.module.bucket.aws_s3_bucket_public_access_block.this[0]", plan)
+	bucketPublicAccess, err := tfplanstruct.GetResourceChangeAfterByAddressE("module.test_website_bucket.module.bucket.aws_s3_bucket_public_access_block.this[0]", plan)
 
 	/* ASSERTIONS */
+	assert.Empty(t, err)
 	assert.Equal(t, false, bucketPublicAccess["block_public_acls"])
 	assert.Equal(t, false, bucketPublicAccess["block_public_policy"])
 	assert.Equal(t, false, bucketPublicAccess["ignore_public_acls"])
@@ -72,7 +78,8 @@ func TestTerraformAwsS3WebsiteBucketOwnershipControls(t *testing.T) {
 
 	/* ACTION */
 	plan := terraform.InitAndPlanAndShowWithStructNoLogTempPlanFile(t, terraformOptions)
-	bucketOwnershipControls := GetResourceChangeAfterByAddress("module.test_website_bucket.module.bucket.aws_s3_bucket_ownership_controls.this[0]", plan)
+	bucketOwnershipControls, err := tfplanstruct.GetResourceChangeAfterByAddressE("module.test_website_bucket.module.bucket.aws_s3_bucket_ownership_controls.this[0]", plan)
+	assert.Empty(t, err)
 	ownershipControlRules := bucketOwnershipControls["rule"].([]interface{})[0].(map[string]interface{})
 
 	/* ASSERTIONS */
@@ -92,7 +99,8 @@ func TestTerraformAwsS3WebsiteBucketVersioningIsDisabled(t *testing.T) {
 
 	/* ACTION */
 	plan := terraform.InitAndPlanAndShowWithStructNoLogTempPlanFile(t, terraformOptions)
-	bucketVersioning := GetResourceChangeAfterByAddress("module.test_website_bucket.module.bucket.aws_s3_bucket_versioning.this[0]", plan)
+	bucketVersioning, err := tfplanstruct.GetResourceChangeAfterByAddressE("module.test_website_bucket.module.bucket.aws_s3_bucket_versioning.this[0]", plan)
+	assert.Empty(t, err)
 	isVersionEnabled := bucketVersioning["versioning_configuration"].([]interface{})[0].(map[string]interface{})["status"]
 
 	/* ASSERTIONS */
