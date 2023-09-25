@@ -27,7 +27,6 @@ func TestTerraformAwsS3WebsiteBucketNameVariableCorrectlyAppliedNamed(t *testing
 			"region": "eu-west-3",
 		},
 	}
-	options.PlanFilePath = "./plat.out"
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &options)
 
 	/* ACTION */
