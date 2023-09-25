@@ -1,5 +1,5 @@
 module "bucket" {
-  source = "terraform-aws-modules/s3-bucket/aws"
+  source  = "terraform-aws-modules/s3-bucket/aws"
   version = "3.15.1"
 
   bucket = var.name
@@ -25,12 +25,12 @@ module "bucket" {
     Version = "2012-10-17",
     Statement = [
       {
-        Sid = "PublicReadForGetBucketObjects",
+        Sid    = "PublicReadForGetBucketObjects",
         Effect = "Allow",
         Principal = {
           AWS = "*"
         },
-        Action = "s3:GetObject",
+        Action   = "s3:GetObject",
         Resource = "arn:aws:s3:::${var.name}/*"
       }
     ]
