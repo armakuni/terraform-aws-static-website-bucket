@@ -19,7 +19,7 @@ import (
 
 func TestTerraformAwsS3WebsiteBucket(t *testing.T) {
 	///* ARRANGE */
-	// Note this bucket name is restricted by the Github Actions OIDC role
+	// Note this bucket name is restricted by the GitHub Actions OIDC role
 	bucketName := "terratest-website-bucket-test-" + strings.ToLower(random.UniqueId())
 	const awsRegion = "eu-west-3"
 
