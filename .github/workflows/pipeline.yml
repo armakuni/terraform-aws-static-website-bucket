@@ -5,7 +5,7 @@ on:
 
 jobs:
   run-tests:
-    if: github.ref == 'refs/heads/main' || github.actor == 'dependabot[bot]'
+    if: github.ref == 'refs/heads/main'
     uses: ./.github/workflows/run-tests.yml
     secrets:
       aws-account-id: ${{ secrets.ARMAKUNI_AWS_PROD_ACCOUNT_ID }}
