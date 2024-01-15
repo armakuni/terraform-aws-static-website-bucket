@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.4.4](https://github.com/armakuni/terraform-aws-static-website-bucket/compare/v0.4.3..v0.4.4) - 2024-01-15
+#### Bug Fixes
+- **(deps)** bump terraform-aws-modules/s3-bucket/aws from 3.15.2 to 4.0.1 - ([68b7368](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/68b7368677c88d71ca2ed063df18e2e77be8f977)) - dependabot[bot]
+
+- - -
+
 ## [v0.4.3](https://github.com/armakuni/terraform-aws-static-website-bucket/compare/v0.4.2..v0.4.3) - 2024-01-12
 #### Bug Fixes
 - **(deps)** bump terraform-aws-modules/s3-bucket/aws - ([ed235a4](https://github.com/armakuni/terraform-aws-static-website-bucket/commit/ed235a45082905d44f00da56424f08d2ee1336d5)) - dependabot[bot]
