@@ -31,7 +31,7 @@ jobs:
       - lint-pipeline
       - run-tests
     if: github.ref == 'refs/heads/main'
-    uses: armakuni/github-actions/.github/workflows/tag-and-release.yml@v0.19.6
+    uses: armakuni/github-actions/.github/workflows/tag-and-release.yml@v0.19.11
     secrets: inherit
     with:
       download-artifacts: true
